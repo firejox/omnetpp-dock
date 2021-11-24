@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - 'main'
-    paths:
-      - '.github/workflow/**'
-      - 'Dockerfile'
 
 jobs:
   docker:
@@ -30,7 +27,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: firejox/ns3-dock:latest
+          tags: firejox/omnetpp-dock:latest
       - 
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
