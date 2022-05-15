@@ -23,3 +23,21 @@ If you want to start an interactive shell, just run
 ```sh
 x11docker -i firejox/omnetpp-dock
 ```
+
+## Experimental Images
+
+### Without x11docker
+
+The image with tag `xpra` is the experimental image for open the GUI without relying on x11docker. It use [xpra](https://github.com/Xpra-org/xpra) to run seamleass GUI application. It use the network port `9876` to connect by default. Here is an example.
+
+* Server
+```sh
+docker run -p host:port:9876 firejox/omnetpp-dock:xpra
+```
+
+* Client
+```sh
+xpra attach tcp://host:port
+```
+
+**warning:**  Do not expose the port on public network, because there is no authentication and encryption.

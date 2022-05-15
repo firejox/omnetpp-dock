@@ -1,0 +1,20 @@
+arg from
+
+from ${from} as env-build
+
+run apt-get update && \
+    DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y \
+    apt-transport-https software-properties-common ca-certificates && \
+    curl -o "/usr/share/keyrings/xpra-2022.gpg" https://xpra.org/xpra-2022.gpg && \
+    curl -o "/etc/apt/sources.list.d/xpra.list" https://xpra.org/repos/impish/xpra.list && \
+    apt-get update && \
+    apt-cache search xpra &&\
+    DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y \
+    xpra xvfb dbus-x11 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+env OMNETPP_PORT=9876
+expose $OMNETPP_PORT
+
+cmd ["/bin/bash", "-l", "-c", "xpra start --bind-tcp=0.0.0.0:${OMNETPP_PORT} --start-child=omnetpp --exit-with-children=yes --daemon=no --xvfb=\"/usr/bin/Xvfb +extension Composite -screen 0 1920x1080x24+32 -nolisten tcp -noreset\" --pulseaudio=no --notifications=no --bell=no :100"]
