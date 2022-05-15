@@ -12,15 +12,14 @@ docker pull firejox/omnetpp-dock
 
 ## Usage
 
-The following command will start an interactive shell. The omnetpp source code will be located in`/omnetpp-6.0pre11`.
+The following command will start `omnetpp` automatically. The omnetpp source code will be located in`/omnetpp`.
+
+```sh
+x11docker firejox/omnetpp-dock
+```
+
+If you want to start an interactive shell, just run
+
 ```sh
 x11docker -i firejox/omnetpp-dock
 ```
-
-When you enter the interactive shell, you should run `setenv` in `/omnetpp-6.0pre11` to setup the `PATH` variable.
-
-```sh
-cd /omnetpp-6.0pre11
-source ./setenv
-```
-

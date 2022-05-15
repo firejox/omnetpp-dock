@@ -1,0 +1,16 @@
+from ubuntu:impish
+
+run apt-get update && \
+    DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install --no-install-recommends --yes \
+    gcc g++ gdb bison flex make \
+    git python3 python3-pip python3-dev openscenegraph libopenscenegraph-dev curl \
+    openmpi-bin libopenmpi-dev \
+    gdal-bin libgdal-dev minizip rocksdb-tools duktape cmake \
+    default-jre default-jdk openjfx \
+    swig doxygen graphviz libpcap-dev tcl libqt5svg5 libqt5opengl5-dev \
+    qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools \
+    ffmpeg && \
+    apt-get clean && \
+    python3 -m pip install --upgrade pip && \
+    pip install posix-ipc numpy scipy pandas matplotlib  && \
+    rm -rf /var/lib/apt/lists/*

@@ -1,33 +1,65 @@
 name: build and deploy to docker hub
 
 on:
-  push:
-    branches:
-      - 'main'
+  release:
+    types:
+      - published
 
 jobs:
-  docker:
+  base-image:
     runs-on: ubuntu-latest
     steps:
-      - 
-        name: Set up QEMU
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
-      - 
-        name: Set up Dokcer Buildx
+
+      - name: Set up Dokcer Buildx
         uses: docker/setup-buildx-action@v1
-      - 
-        name: Login to Dockerhub
+
+      - name: Login to Dockerhub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - 
-        name: Build and Push
+
+      - name: Build and Push Image
         id: docker_build
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: firejox/omnetpp-dock:latest
-      - 
-        name: Image digest
+          file: Dockerfile.ubuntu
+          tags:
+            - firejox/omnetpp-dock:ubuntu-base-${{ github.event.release.tag_name }}
+            - firejox/omnetpp-dock:base
+
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+  omnetpp-image:
+    needs: base-image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Dokcer Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to Dockerhub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push Image
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          file: Dockerfile.omnetpp
+          build-args: from=firejox/omnetpp-dock:ubuntu-${{ github.event.release.tag_name }}
+          tags:
+            - firejox/omnetpp-dock:ubuntu-${{ github.event.release.tag_name }}
+            - firejox/omnetpp-dock:ubuntu-latest
+            - firejox/omnetpp-dock:latest
+
+      - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
